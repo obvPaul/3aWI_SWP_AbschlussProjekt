@@ -3,7 +3,9 @@
     public class Raum
     {
         public int Id { get; set; }
-        public string Bezeichnung { get; set; }
+        public string Bezeichnung { get; set; } = string.Empty;
+
+        public Raum() { }
 
         public Raum(string bezeichnung)
         {

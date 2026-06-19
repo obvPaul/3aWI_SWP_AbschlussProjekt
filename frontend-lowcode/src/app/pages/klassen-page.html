@@ -1,0 +1,68 @@
+<h2>Klassen</h2>
+<p class="seiten-beschreibung">Klassen anlegen, löschen und einen Klassenvorstand zuordnen.</p>
+
+@if (fehler()) {
+  <div class="fehler-banner">{{ fehler() }}</div>
+}
+
+<div class="card">
+  <h3>Neue Klasse anlegen</h3>
+  <form class="formular-zeile" (ngSubmit)="anlegen()">
+    <div class="feld">
+      <label for="name">Name</label>
+      <input id="name" name="name" [(ngModel)]="name" required placeholder="z.B. 3aWI">
+    </div>
+    <div class="feld">
+      <label for="kv">Klassenvorstand</label>
+      <select id="kv" name="kv" [(ngModel)]="klassenvorstandId">
+        <option [ngValue]="null">– kein KV –</option>
+        @for (l of lehrer(); track l.id) {
+          <option [ngValue]="l.id">{{ l.vorname }} {{ l.nachname }}</option>
+        }
+      </select>
+    </div>
+    <button class="btn btn-primaer" type="submit" [disabled]="!name.trim()">Anlegen</button>
+  </form>
+  <p class="hinweis">Hinweis: Das Backend bietet für Klassen kein Bearbeiten an – nur Anlegen und Löschen.</p>
+</div>
+
+<div class="card">
+  <h3>Alle Klassen ({{ klassen().length }})</h3>
+  @if (laden()) {
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+  } @else if (klassen().length === 0) {
+    <p class="leer-text">Noch keine Klassen vorhanden.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Klassenvorstand</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (k of klassen(); track k.id) {
+          <tr [style.animation-delay]="($index * 45) + 'ms'">
+            <td>{{ k.id }}</td>
+            <td>{{ k.name }}</td>
+            <td>
+              @if (k.klassenvorstand) {
+                {{ k.klassenvorstand.vorname }} {{ k.klassenvorstand.nachname }}
+              } @else {
+                <span class="badge badge-grau">kein KV</span>
+              }
+            </td>
+            <td class="aktionen">
+              <button class="btn btn-gefahr btn-klein" (click)="loeschen(k)">Löschen</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

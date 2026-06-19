@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWP_abschluss_projekt.Models;
 
@@ -24,9 +24,30 @@ namespace SWP_abschluss_projekt.Controllers
         [HttpPost]
         public async Task<ActionResult<Klasse>> Create(Klasse klasse)
         {
+            // Fix: Lehrer aus DB laden statt das JSON-Objekt zu inserieren
+            if (klasse.Klassenvorstand != null && klasse.Klassenvorstand.Id > 0)
+            {
+                var lehrer = await _context.Lehrer.FindAsync(klasse.Klassenvorstand.Id);
+                klasse.Klassenvorstand = lehrer;
+            }
+            else
+            {
+                klasse.Klassenvorstand = null;
+            }
+
             _context.Klassen.Add(klasse);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetAll), new { id = klasse.Id }, klasse);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var klasse = await _context.Klassen.FindAsync(id);
+            if (klasse == null) return NotFound();
+            _context.Klassen.Remove(klasse);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }

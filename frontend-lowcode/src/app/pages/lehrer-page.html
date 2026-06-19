@@ -1,0 +1,62 @@
+<h2>Lehrer</h2>
+<p class="seiten-beschreibung">Lehrer anlegen, bearbeiten und löschen.</p>
+
+@if (fehler()) {
+  <div class="fehler-banner">{{ fehler() }}</div>
+}
+
+<div class="card">
+  <h3>{{ bearbeiteId === null ? 'Neuen Lehrer anlegen' : 'Lehrer bearbeiten' }}</h3>
+  <form class="formular-zeile" (ngSubmit)="speichern()">
+    <div class="feld">
+      <label for="vorname">Vorname</label>
+      <input id="vorname" name="vorname" [(ngModel)]="vorname" required placeholder="z.B. Maria">
+    </div>
+    <div class="feld">
+      <label for="nachname">Nachname</label>
+      <input id="nachname" name="nachname" [(ngModel)]="nachname" required placeholder="z.B. Huber">
+    </div>
+    <button class="btn btn-primaer" type="submit" [disabled]="!vorname.trim() || !nachname.trim()">
+      {{ bearbeiteId === null ? 'Anlegen' : 'Speichern' }}
+    </button>
+    @if (bearbeiteId !== null) {
+      <button class="btn btn-neutral" type="button" (click)="formularZuruecksetzen()">Abbrechen</button>
+    }
+  </form>
+</div>
+
+<div class="card">
+  <h3>Alle Lehrer ({{ lehrer().length }})</h3>
+  @if (laden()) {
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+  } @else if (lehrer().length === 0) {
+    <p class="leer-text">Noch keine Lehrer vorhanden.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Vorname</th>
+          <th>Nachname</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (l of lehrer(); track l.id) {
+          <tr [style.animation-delay]="($index * 45) + 'ms'">
+            <td>{{ l.id }}</td>
+            <td>{{ l.vorname }}</td>
+            <td>{{ l.nachname }}</td>
+            <td class="aktionen">
+              <button class="btn btn-neutral btn-klein" (click)="bearbeiten(l)">Bearbeiten</button>
+              <button class="btn btn-gefahr btn-klein" (click)="loeschen(l)">Löschen</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

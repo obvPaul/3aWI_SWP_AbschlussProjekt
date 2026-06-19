@@ -1,0 +1,35 @@
+<h2>Schüler</h2>
+
+<form (ngSubmit)="speichern()">
+  Vorname: <input name="vorname" [(ngModel)]="vorname" required>
+  Nachname: <input name="nachname" [(ngModel)]="nachname" required>
+  Klasse:
+  <select name="klasseId" [(ngModel)]="klasseId">
+    <option [ngValue]="null">keine</option>
+    <option *ngFor="let k of klassen" [ngValue]="k.id">{{ k.name }}</option>
+  </select>
+  <button type="submit">{{ editId == null ? 'Anlegen' : 'Speichern' }}</button>
+  <button type="button" *ngIf="editId != null" (click)="zuruecksetzen()">Abbrechen</button>
+</form>
+
+<br>
+
+<table>
+  <tr>
+    <th>Id</th>
+    <th>Vorname</th>
+    <th>Nachname</th>
+    <th>Klasse</th>
+    <th>Aktionen</th>
+  </tr>
+  <tr *ngFor="let s of schueler">
+    <td>{{ s.id }}</td>
+    <td>{{ s.vorname }}</td>
+    <td>{{ s.nachname }}</td>
+    <td>{{ s.klasse ? s.klasse.name : '-' }}</td>
+    <td>
+      <button (click)="bearbeiten(s)">Bearbeiten</button>
+      <button (click)="loeschen(s.id)">Löschen</button>
+    </td>
+  </tr>
+</table>

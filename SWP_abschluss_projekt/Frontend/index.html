@@ -63,9 +63,9 @@
     <div class="container">
       <h1>Neuer Schüler</h1>
       <form id="schuelerForm">
-        <input type="text" id="name" placeholder="Name" required />
-        <input type="number" id="alter" placeholder="Alter" required />
-        <input type="text" id="klasseId" placeholder="Klasse ID" required />
+        <input type="text" id="vorname" placeholder="Vorname" required />
+        <input type="text" id="nachname" placeholder="Nachname" required />
+        <input type="number" id="klasseId" placeholder="Klasse ID (optional)" />
         <button type="submit">Speichern</button>
       </form>
 
@@ -80,8 +80,7 @@
         <input
           type="number"
           id="klassenvorstandId"
-          placeholder="Klassenvorstand Lehrer ID"
-          required
+          placeholder="Klassenvorstand Lehrer ID (optional)"
         />
         <button type="submit">Speichern</button>
       </form>
@@ -97,15 +96,20 @@
         <input
           type="number"
           id="fachLehrerId"
-          placeholder="Lehrer ID"
-          required
+          placeholder="Lehrer ID (optional)"
         />
         <button type="submit">Speichern</button>
       </form>
 
       <h1>Neuer Lehrer</h1>
       <form id="lehrerForm">
-        <input type="text" id="lehrerName" placeholder="Lehrername" required />
+        <input type="text" id="lehrerVorname" placeholder="Vorname" required />
+        <input
+          type="text"
+          id="lehrerNachname"
+          placeholder="Nachname"
+          required
+        />
         <button type="submit">Speichern</button>
       </form>
 
@@ -136,8 +140,8 @@
         output.innerHTML = data
           .map(
             (s) =>
-              `<div class="entry">${s.name}, Alter: ${s.alter}, Klasse: ${
-                s.klasse?.name ?? "Unbekannt"
+              `<div class="entry">${s.vorname} ${s.nachname}, Klasse: ${
+                s.klasse?.name ?? "Keine"
               }</div>`
           )
           .join("");
@@ -147,13 +151,14 @@
         .getElementById("schuelerForm")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
+          const klasseId = parseInt(document.getElementById("klasseId").value);
           const res = await fetch(`${apiBase}/schueler`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              name: document.getElementById("name").value,
-              alter: parseInt(document.getElementById("alter").value),
-              klasseId: parseInt(document.getElementById("klasseId").value),
+              vorname: document.getElementById("vorname").value,
+              nachname: document.getElementById("nachname").value,
+              klasse: klasseId ? { id: klasseId } : null,
             }),
           });
           if (res.ok) fetchAndDisplay();
@@ -163,14 +168,17 @@
         .getElementById("klasseForm")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
+          const klassenvorstandId = parseInt(
+            document.getElementById("klassenvorstandId").value
+          );
           await fetch(`${apiBase}/klasse`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               name: document.getElementById("klassenname").value,
-              klassenvorstandId: parseInt(
-                document.getElementById("klassenvorstandId").value
-              ),
+              klassenvorstand: klassenvorstandId
+                ? { id: klassenvorstandId }
+                : null,
             }),
           });
         });
@@ -179,12 +187,15 @@
         .getElementById("fachForm")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
+          const fachLehrerId = parseInt(
+            document.getElementById("fachLehrerId").value
+          );
           await fetch(`${apiBase}/fach`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               bezeichnung: document.getElementById("fachBezeichnung").value,
-              lehrerId: parseInt(document.getElementById("fachLehrerId").value),
+              lehrer: fachLehrerId ? { id: fachLehrerId } : null,
             }),
           });
         });
@@ -197,7 +208,8 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              name: document.getElementById("lehrerName").value,
+              vorname: document.getElementById("lehrerVorname").value,
+              nachname: document.getElementById("lehrerNachname").value,
             }),
           });
         });

@@ -1,0 +1,32 @@
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span class="logo">🏫</span>
+      <div>
+        <h1>Schulverwaltung</h1>
+        <p class="untertitel">Low-Code-Frontend (Angular)</p>
+      </div>
+    </div>
+
+    <nav>
+      @for (link of navLinks; track link.pfad) {
+        <a
+          [routerLink]="link.pfad"
+          routerLinkActive="aktiv"
+          [routerLinkActiveOptions]="{ exact: link.exakt }">
+          <span class="nav-icon">{{ link.icon }}</span>
+          {{ link.label }}
+        </a>
+      }
+    </nav>
+
+    <footer class="sidebar-footer">
+      SWP-Abschlussprojekt 3aWI<br>
+      erstellt mit Claude Code
+    </footer>
+  </aside>
+
+  <main class="inhalt">
+    <router-outlet />
+  </main>
+</div>

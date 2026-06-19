@@ -224,3 +224,8 @@ AppPackages/
 #####
 # End of core ignore list, below put you custom 'per project' settings (patterns or path)
 #####
+
+# SQLite-Datenbank (wird lokal zur Laufzeit erzeugt/geändert)
+*.db
+*.db-shm
+*.db-wal

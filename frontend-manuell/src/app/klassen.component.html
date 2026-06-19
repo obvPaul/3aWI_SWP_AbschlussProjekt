@@ -1,0 +1,30 @@
+<h2>Klassen</h2>
+
+<form (ngSubmit)="anlegen()">
+  Name: <input name="name" [(ngModel)]="name" required>
+  Klassenvorstand:
+  <select name="kvId" [(ngModel)]="kvId">
+    <option [ngValue]="null">keiner</option>
+    <option *ngFor="let l of lehrer" [ngValue]="l.id">{{ l.vorname }} {{ l.nachname }}</option>
+  </select>
+  <button type="submit">Anlegen</button>
+</form>
+
+<br>
+
+<table>
+  <tr>
+    <th>Id</th>
+    <th>Name</th>
+    <th>Klassenvorstand</th>
+    <th>Aktionen</th>
+  </tr>
+  <tr *ngFor="let k of klassen">
+    <td>{{ k.id }}</td>
+    <td>{{ k.name }}</td>
+    <td>{{ k.klassenvorstand ? k.klassenvorstand.vorname + ' ' + k.klassenvorstand.nachname : '-' }}</td>
+    <td>
+      <button (click)="loeschen(k.id)">Löschen</button>
+    </td>
+  </tr>
+</table>

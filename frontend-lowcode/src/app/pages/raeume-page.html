@@ -1,0 +1,47 @@
+<h2>Räume</h2>
+<p class="seiten-beschreibung">Räume anzeigen und neue Räume anlegen.</p>
+
+@if (fehler()) {
+  <div class="fehler-banner">{{ fehler() }}</div>
+}
+
+<div class="card">
+  <h3>Neuen Raum anlegen</h3>
+  <form class="formular-zeile" (ngSubmit)="anlegen()">
+    <div class="feld">
+      <label for="bezeichnung">Bezeichnung</label>
+      <input id="bezeichnung" name="bezeichnung" [(ngModel)]="bezeichnung" required placeholder="z.B. EDV-Saal 1">
+    </div>
+    <button class="btn btn-primaer" type="submit" [disabled]="!bezeichnung.trim()">Anlegen</button>
+  </form>
+  <p class="hinweis">Hinweis: Das Backend bietet für Räume nur Anzeigen und Anlegen an – kein Bearbeiten oder Löschen.</p>
+</div>
+
+<div class="card">
+  <h3>Alle Räume ({{ raeume().length }})</h3>
+  @if (laden()) {
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+  } @else if (raeume().length === 0) {
+    <p class="leer-text">Noch keine Räume vorhanden.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Bezeichnung</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of raeume(); track r.id) {
+          <tr [style.animation-delay]="($index * 45) + 'ms'">
+            <td>{{ r.id }}</td>
+            <td>{{ r.bezeichnung }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

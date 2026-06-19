@@ -1,0 +1,26 @@
+<h2>Dashboard</h2>
+<p class="seiten-beschreibung">Überblick über alle Daten der Schulverwaltung.</p>
+
+@if (fehler()) {
+  <div class="fehler-banner">{{ fehler() }}</div>
+}
+
+@if (laden()) {
+  <div class="kachel-raster">
+    <div class="kachel-skeleton"></div>
+    <div class="kachel-skeleton"></div>
+    <div class="kachel-skeleton"></div>
+    <div class="kachel-skeleton"></div>
+    <div class="kachel-skeleton"></div>
+  </div>
+} @else if (!fehler()) {
+  <div class="kachel-raster">
+    @for (kachel of kacheln(); track kachel.link) {
+      <a class="kachel" [routerLink]="kachel.link" [style.animation-delay]="($index * 90) + 'ms'">
+        <span class="kachel-icon">{{ kachel.icon }}</span>
+        <div class="kachel-anzahl">{{ angezeigteZahlen()[$index] ?? kachel.anzahl }}</div>
+        <div class="kachel-titel">{{ kachel.titel }}</div>
+      </a>
+    }
+  </div>
+}

@@ -5,7 +5,13 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // ✅ Dienste registrieren
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Fix: Zirkuläre Referenzen ignorieren (Klasse → Lehrer → KlassenAlsKV → Klasse...)
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 
 // ✅ DbContext konfigurieren
 builder.Services.AddDbContext<SchulDbContext>(options =>

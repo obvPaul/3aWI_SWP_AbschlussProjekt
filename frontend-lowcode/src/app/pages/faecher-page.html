@@ -1,0 +1,68 @@
+<h2>Fächer</h2>
+<p class="seiten-beschreibung">Fächer anlegen, löschen und einem Lehrer zuordnen.</p>
+
+@if (fehler()) {
+  <div class="fehler-banner">{{ fehler() }}</div>
+}
+
+<div class="card">
+  <h3>Neues Fach anlegen</h3>
+  <form class="formular-zeile" (ngSubmit)="anlegen()">
+    <div class="feld">
+      <label for="bezeichnung">Bezeichnung</label>
+      <input id="bezeichnung" name="bezeichnung" [(ngModel)]="bezeichnung" required placeholder="z.B. Mathematik">
+    </div>
+    <div class="feld">
+      <label for="lehrer">Lehrer</label>
+      <select id="lehrer" name="lehrer" [(ngModel)]="lehrerId">
+        <option [ngValue]="null">– kein Lehrer –</option>
+        @for (l of lehrer(); track l.id) {
+          <option [ngValue]="l.id">{{ l.vorname }} {{ l.nachname }}</option>
+        }
+      </select>
+    </div>
+    <button class="btn btn-primaer" type="submit" [disabled]="!bezeichnung.trim()">Anlegen</button>
+  </form>
+  <p class="hinweis">Hinweis: Das Backend bietet für Fächer kein Bearbeiten an – nur Anlegen und Löschen.</p>
+</div>
+
+<div class="card">
+  <h3>Alle Fächer ({{ faecher().length }})</h3>
+  @if (laden()) {
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+  } @else if (faecher().length === 0) {
+    <p class="leer-text">Noch keine Fächer vorhanden.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Bezeichnung</th>
+          <th>Lehrer</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (f of faecher(); track f.id) {
+          <tr [style.animation-delay]="($index * 45) + 'ms'">
+            <td>{{ f.id }}</td>
+            <td>{{ f.bezeichnung }}</td>
+            <td>
+              @if (f.lehrer) {
+                {{ f.lehrer.vorname }} {{ f.lehrer.nachname }}
+              } @else {
+                <span class="badge badge-grau">kein Lehrer</span>
+              }
+            </td>
+            <td class="aktionen">
+              <button class="btn btn-gefahr btn-klein" (click)="loeschen(f)">Löschen</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

@@ -1,0 +1,79 @@
+<h2>Schüler</h2>
+<p class="seiten-beschreibung">Schüler anlegen, bearbeiten, löschen und einer Klasse zuordnen.</p>
+
+@if (fehler()) {
+  <div class="fehler-banner">{{ fehler() }}</div>
+}
+
+<div class="card">
+  <h3>{{ bearbeiteId === null ? 'Neuen Schüler anlegen' : 'Schüler bearbeiten' }}</h3>
+  <form class="formular-zeile" (ngSubmit)="speichern()">
+    <div class="feld">
+      <label for="vorname">Vorname</label>
+      <input id="vorname" name="vorname" [(ngModel)]="vorname" required placeholder="z.B. Max">
+    </div>
+    <div class="feld">
+      <label for="nachname">Nachname</label>
+      <input id="nachname" name="nachname" [(ngModel)]="nachname" required placeholder="z.B. Mustermann">
+    </div>
+    <div class="feld">
+      <label for="klasse">Klasse</label>
+      <select id="klasse" name="klasse" [(ngModel)]="klasseId">
+        <option [ngValue]="null">– keine Klasse –</option>
+        @for (k of klassen(); track k.id) {
+          <option [ngValue]="k.id">{{ k.name }}</option>
+        }
+      </select>
+    </div>
+    <button class="btn btn-primaer" type="submit" [disabled]="!vorname.trim() || !nachname.trim()">
+      {{ bearbeiteId === null ? 'Anlegen' : 'Speichern' }}
+    </button>
+    @if (bearbeiteId !== null) {
+      <button class="btn btn-neutral" type="button" (click)="formularZuruecksetzen()">Abbrechen</button>
+    }
+  </form>
+</div>
+
+<div class="card">
+  <h3>Alle Schüler ({{ schueler().length }})</h3>
+  @if (laden()) {
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+    <div class="skeleton-zeile"></div>
+  } @else if (schueler().length === 0) {
+    <p class="leer-text">Noch keine Schüler vorhanden.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Vorname</th>
+          <th>Nachname</th>
+          <th>Klasse</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of schueler(); track s.id) {
+          <tr [style.animation-delay]="($index * 45) + 'ms'">
+            <td>{{ s.id }}</td>
+            <td>{{ s.vorname }}</td>
+            <td>{{ s.nachname }}</td>
+            <td>
+              @if (s.klasse) {
+                <span class="badge">{{ s.klasse.name }}</span>
+              } @else {
+                <span class="badge badge-grau">keine</span>
+              }
+            </td>
+            <td class="aktionen">
+              <button class="btn btn-neutral btn-klein" (click)="bearbeiten(s)">Bearbeiten</button>
+              <button class="btn btn-gefahr btn-klein" (click)="loeschen(s)">Löschen</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
